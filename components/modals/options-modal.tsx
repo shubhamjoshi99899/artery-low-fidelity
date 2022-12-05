@@ -8,7 +8,7 @@ interface Props {
   heading?: string;
   body?: string;
   body2?: string;
-  buttonText: string;
+  buttonText?: string;
   confirmClick?: any;
   fromInvoiceAccept?: any;
   secondarybuttonText?: any;
