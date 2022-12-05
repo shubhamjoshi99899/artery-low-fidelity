@@ -20,9 +20,18 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { MobileTimePicker } from "@mui/x-date-pickers/MobileTimePicker";
 import theme from "../../styles/theme";
 import { useRouter } from "next/router";
+import VerificationDialogueBox from "../../components/modals/verification-dialogue-box";
+import OptionsModal from "../../components/modals/options-modal";
 const CreateEvent = () => {
   const router = useRouter();
   const [value, setValue] = React.useState<Dayjs | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const [openOptions, setOpenOptions] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setOpen(false);
+    setOpenOptions(false);
+  };
   return (
     <>
       <Box mb={10}>
@@ -113,7 +122,22 @@ const CreateEvent = () => {
           fullWidth
           type={"submit"}
           sx={{ mb: 3 }}
-          onClick={() => router.push("/create-event/negative-list")}
+          onClick={() => setOpen(true)}
+        />
+        <VerificationDialogueBox
+          openVerificationDialog={open}
+          closeVerificationDialog={handleClose}
+          heading="‘WiserCount’ Would like to
+          Access the Camera/View Files"
+          body="Camera usage and burst shots 
+          for adding member images"
+          buttonText="Don't Allow"
+          secondarybuttonText="Ok"
+          handleOptions={() => setOpenOptions(true)}
+        />
+        <OptionsModal
+          closeVerificationDialog={handleClose}
+          openVerificationDialog={openOptions}
         />
         <PrimaryButton
           text="Create Event"
