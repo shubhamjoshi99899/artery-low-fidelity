@@ -3,6 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import PrimaryButton from "../components/buttons/primaryButton";
+import EventCard from "../components/events/event-card";
 import Header from "../components/header";
 const Home = () => {
   const router = useRouter();
@@ -37,17 +38,49 @@ const Home = () => {
       </Container>
 
       <Divider sx={{ mb: 5 }} />
-      <Stack
-        p={5}
-        textAlign={"center"}
-        justifyContent={"center"}
-        alignItems="center"
-      >
-        <Typography mb={8} fontWeight={600} fontSize={"1.25rem"}>
-          Hassle free, real-time count of your guests with Wisercount
-        </Typography>
-        <Image src="/meeting.png" width={300} height={300} alt="meeting" />
-      </Stack>
+      <Container sx={{ mb: 2 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            sx={{
+              fontWeight: "600",
+              fontSize: "1rem",
+              lineHeight: "19px",
+              color: "#7D7D7D",
+              mb: 2,
+            }}
+          >
+            Ongoing Event
+          </Typography>
+          <EventCard />
+        </Box>
+        <Box>
+          <Stack direction="row" justifyContent={"space-between"}>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                fontSize: "1rem",
+                lineHeight: "19px",
+                color: "#7D7D7D",
+                mb: 2,
+              }}
+            >
+              Scheduled Events
+            </Typography>
+            <Typography
+              sx={{
+                fontWeight: "600",
+                fontSize: "1rem",
+                lineHeight: "19px",
+                color: "#7D7D7D",
+                mb: 2,
+              }}
+            >
+              View All
+            </Typography>
+          </Stack>
+          <EventCard />
+        </Box>
+      </Container>
     </div>
   );
 };

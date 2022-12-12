@@ -20,7 +20,7 @@ const NegativeList = () => {
       <Box mb={10}>
         <Header sx={{ ml: -5 }} text="Negative List" backIcon />
         <Container>
-          <Stack mb={2} direction="row" justifyContent="left" spacing={3}>
+          {/* <Stack mb={2} direction="row" justifyContent="left" spacing={3}>
             <Chip
               sx={{
                 background: "#090E82",
@@ -45,7 +45,7 @@ const NegativeList = () => {
               label="Event Details"
               variant="outlined"
             />
-          </Stack>
+          </Stack> */}
         </Container>
         <Divider sx={{ mb: 3 }} />
         <Container>
