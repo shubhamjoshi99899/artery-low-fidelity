@@ -1,12 +1,36 @@
 import { Box, Container, Divider, Stack, Typography } from "@mui/material";
+import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { handleClientScriptLoad } from "next/script";
+import { useState } from "react";
 import PrimaryButton from "../components/buttons/primaryButton";
+import CreateEventModal from "../components/events/create-event-modal";
 import EventCard from "../components/events/event-card";
 import Header from "../components/header";
+import CreateEvent from "./create-event";
 const Home = () => {
   const router = useRouter();
+  const [open, setOpen] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const handleOpenModal = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = (values: any) => {
+    axios
+      .post("https://portal.wisercount.com/api/event", values)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div>
       <Head>
@@ -24,8 +48,7 @@ const Home = () => {
             text="Create Event"
             variant="contained"
             dark
-            type="submit"
-            onClick={() => router.push("/create-event")}
+            onClick={handleOpenModal}
           />
           <PrimaryButton
             fullWidth
@@ -39,7 +62,7 @@ const Home = () => {
 
       <Divider sx={{ mb: 5 }} />
       <Container sx={{ mb: 2 }}>
-        <Box sx={{ mb: 4 }}>
+        {/* <Box sx={{ mb: 4 }}>
           <Typography
             sx={{
               fontWeight: "600",
@@ -79,7 +102,13 @@ const Home = () => {
             </Typography>
           </Stack>
           <EventCard />
-        </Box>
+        </Box> */}
+        <CreateEventModal
+          open={open}
+          handleClose={handleClose}
+          handleSubmit={handleSubmit}
+          loading={disabled}
+        />
       </Container>
     </div>
   );

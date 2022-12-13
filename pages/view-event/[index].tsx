@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -6,31 +6,65 @@ import {
   Stack,
   Typography,
   Grid,
+  Skeleton,
+  IconButton,
 } from "@mui/material";
 import Header from "../../components/header";
 import theme from "../../styles/theme";
 import HeaderText from "../../components/page-ui-components/header-text";
 import LanguageIcon from "@mui/icons-material/Language";
 import Image from "next/image";
-const ViewEvent = () => {
+import axios from "axios";
+import SyncIcon from "@mui/icons-material/Sync";
+interface Props {
+  query?: any;
+}
+const ViewEvent: React.FC<Props> = ({ query }) => {
+  const [data, setData] = useState<any | []>([]);
+
+  const getEventDetails = () => {
+    axios
+      .get(`https://portal.wisercount.com/api/event/${query.index}`)
+      .then((res) => {
+        setData(res.data.persons);
+        console.log(res.data.persons);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getEventDetails();
+  }, [query]);
   return (
     <>
       <Box mb={10}>
         <Header text="Event Name" backIcon editIcon />
       </Box>
       <Container>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            fontSize: "1.25rem",
-            color: theme.palette.secondary.main,
-            fontWeight: 600,
-            mb: 2,
-          }}
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          justifyContent="space-between"
         >
-          Statistics
-        </Typography>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              fontSize: "1.25rem",
+              color: theme.palette.secondary.main,
+              fontWeight: 600,
+              mb: 2,
+            }}
+          >
+            Statistics
+          </Typography>
+          <IconButton onClick={getEventDetails}>
+            <SyncIcon />
+          </IconButton>
+        </Stack>
         <HeaderText text1="Fri, 24th Jan’22" text2="STARTED: 19:00" />
         <Stack
           sx={{
@@ -53,7 +87,7 @@ const ViewEvent = () => {
                 color: "#121212",
               }}
             >
-              Live Count
+              Final Count
             </Typography>
           </Stack>
           <Typography
@@ -64,37 +98,50 @@ const ViewEvent = () => {
               color: "#090E82",
             }}
           >
-            500
+            {data?.length}
           </Typography>
         </Stack>
         <Grid container>
-          <Grid item xs={4} spacing={1}>
+          {/* <Grid item xs={4} spacing={1}>
             <Image
               style={{ border: "1px solid red" }}
-              src="/meeting.png"
+              src={data?.persons?.f}
               width={100}
               height={100}
               alt="image"
             />
           </Grid>
-          <Grid item xs={4}>
+          */}
+
+          {/* <Grid item xs={4}>
             <Image
-              style={{ border: "1px solid red" }}
+              // style={{ border: "1px solid red" }}
               src="/meeting.png"
               width={100}
               height={100}
               alt="image"
             />
-          </Grid>
-          <Grid item xs={4}>
-            <Image
-              style={{ border: "1px solid red" }}
-              src="/meeting.png"
-              width={100}
-              height={100}
-              alt="image"
-            />
-          </Grid>
+          </Grid> */}
+          {data?.map((item: any, index: number) => (
+            <Grid key={index} item xs={4}>
+              {item?.faces ? (
+                <Image
+                  // style={{ border: "1px solid red" }}
+                  src={item?.faces[0]?.url}
+                  width={100}
+                  height={100}
+                  alt="image"
+                />
+              ) : (
+                <Skeleton
+                  animation="wave"
+                  variant="rectangular"
+                  width={100}
+                  height={100}
+                />
+              )}
+            </Grid>
+          ))}
         </Grid>
       </Container>
     </>
@@ -102,3 +149,7 @@ const ViewEvent = () => {
 };
 
 export default ViewEvent;
+
+ViewEvent.getInitialProps = async ({ query }) => {
+  return { query };
+};
