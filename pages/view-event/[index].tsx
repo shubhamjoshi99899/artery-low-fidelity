@@ -21,18 +21,18 @@ interface Props {
 }
 const ViewEvent: React.FC<Props> = ({ query }) => {
   const [data, setData] = useState<any | []>([]);
+  const [loading, setLoading] = useState(true);
 
   const getEventDetails = () => {
     axios
       .get(`https://portal.wisercount.com/api/event/${query.index}`)
       .then((res) => {
         setData(res.data.persons);
-        console.log(res.data.persons);
+        setLoading(false);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
+  const skeletonArray = Array(10).fill("");
 
   useEffect(() => {
     getEventDetails();
@@ -124,7 +124,7 @@ const ViewEvent: React.FC<Props> = ({ query }) => {
           </Grid> */}
           {data?.map((item: any, index: number) => (
             <Grid key={index} item xs={4}>
-              {item?.faces ? (
+              {item?.faces && (
                 <Image
                   // style={{ border: "1px solid red" }}
                   src={item?.faces[0]?.url}
@@ -132,14 +132,11 @@ const ViewEvent: React.FC<Props> = ({ query }) => {
                   height={100}
                   alt="image"
                 />
-              ) : (
-                <Skeleton
-                  animation="wave"
-                  variant="rectangular"
-                  width={100}
-                  height={100}
-                />
               )}
+              {loading &&
+                skeletonArray.map((item, index) => (
+                  <Skeleton key={index} variant="rectangular" />
+                ))}
             </Grid>
           ))}
         </Grid>

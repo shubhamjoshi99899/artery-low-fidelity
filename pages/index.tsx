@@ -24,12 +24,10 @@ const Home = () => {
   const handleSubmit = (values: any) => {
     axios
       .post("https://portal.wisercount.com/api/event", values)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      .then((res) => {});
+    // .catch((err) => {
+    //   console.log(err);
+    // });
   };
   return (
     <div>
