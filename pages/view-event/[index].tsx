@@ -16,10 +16,11 @@ import LanguageIcon from "@mui/icons-material/Language";
 import Image from "next/image";
 import axios from "axios";
 import SyncIcon from "@mui/icons-material/Sync";
+import { NextPage } from "next";
 interface Props {
   query?: any;
 }
-const ViewEvent: React.FC<Props> = ({ query }) => {
+const ViewEvent: NextPage<Props> = ({ query }) => {
   const [data, setData] = useState<any | []>([]);
   const [loading, setLoading] = useState(true);
 
