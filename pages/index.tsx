@@ -107,6 +107,19 @@ const Home = () => {
           handleSubmit={handleSubmit}
           loading={disabled}
         />
+        <Stack
+          p={5}
+          textAlign={"center"}
+          justifyContent={"center"}
+          alignItems="center"
+        >
+          <Image
+            src="/Events-amico.png"
+            width={300}
+            height={300}
+            alt="meeting"
+          />
+        </Stack>
       </Container>
     </div>
   );
