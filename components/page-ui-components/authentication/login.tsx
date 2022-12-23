@@ -1,17 +1,19 @@
 import { Box, Button, Container, Divider, Stack } from "@mui/material";
 import Image from "next/image";
 import React from "react";
-import PrimaryButton from "../../components/buttons/primaryButton";
-import Header from "../../components/header";
-import CustomizedInputField from "../../components/inputs/input-field";
+import PrimaryButton from "../../buttons/primaryButton";
+import Header from "../../header";
+import CustomizedInputField from "../../inputs/input-field";
 import GoogleIcon from "@mui/icons-material/Google";
-import theme from "../../styles/theme";
+import theme from "../../../styles/theme";
+import { useRouter } from "next/router";
 
 const Login = () => {
+  const router = useRouter();
   return (
     <>
       <Box mb={10}>
-        <Header text="Admin Login" backIcon />
+        <Header text="Admin Login" />
       </Box>
       <Container>
         <CustomizedInputField
@@ -31,6 +33,7 @@ const Login = () => {
           dark
           type={"submit"}
           sx={{ mb: 3 }}
+          onClick={() => router.push("/dashboard")}
         />
         <Divider sx={{ mb: 3, color: "#7D7D7D" }}>Or</Divider>
         <Button
@@ -48,6 +51,7 @@ const Login = () => {
           }}
           variant="contained"
           fullWidth
+          onClick={() => router.push("/dashboard")}
         >
           <GoogleIcon
             sx={{ width: "24px", height: "24px", color: "#4285F4", mr: 2 }}
