@@ -1,8 +1,16 @@
-import * as yup from "yup";
+import * as Yup from "yup";
 
-export const steponevalidationSchema = yup.object({
-  email: yup.string().required("Email is required"),
-  mobile: yup.string().required("Market is required"),
-  founded: yup.string().required("A year is required"),
-  founder: yup.string().required("Field is required"),
+export const CreateEvent = Yup.object({
+  eventId: Yup.string()
+    .required("Please enter a valid event ID")
+    .min(12, "Invalid event ID, Event ID should be 12 characters long.")
+    .max(12, "Invalid event ID, Event ID should be 12 characters long."),
+  eventConfig: Yup.string(),
+});
+
+export const ViewEventValidationSchema = Yup.object({
+  eventId: Yup.string()
+    .required("Please enter a valid event ID")
+    .min(12, "Invalid event ID, Event ID should be 12 characters long.")
+    .max(12, "Invalid event ID, Event ID should be 12 characters long."),
 });
