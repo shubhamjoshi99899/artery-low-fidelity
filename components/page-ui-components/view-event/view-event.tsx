@@ -7,17 +7,18 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import theme from "../../../styles/theme";
 import HeaderText from "../header-text";
 import SyncIcon from "@mui/icons-material/Sync";
 import LanguageIcon from "@mui/icons-material/Language";
+import LoaderComponent from "../../common/loaders/backdrop-loader";
 
 interface Props {
   data: any;
   getEventDetails: any;
   loading: any;
-  paginatedData: any;
+  paginatedData?: any;
 }
 const skeletonArray = Array(10).fill("");
 
@@ -85,23 +86,39 @@ const ViewEventComponent: React.FC<Props> = ({
               color: "#090E82",
             }}
           >
-            {data?.length}
+            {data?.metadata?.total}
           </Typography>
         </Stack>
         <Grid container>
-          {paginatedData?.map((item: any, index: number) => (
-            <Grid key={index} item xs={4}>
-              {item?.faces && (
-                <Image
-                  src={item?.faces[0]?.url}
-                  width={120}
-                  height={180}
-                  alt="image"
-                  style={{ marginBottom: "12px" }}
-                />
-              )}
-            </Grid>
-          ))}
+          {data?.persons === 0 ? (
+            <Stack
+              p={5}
+              textAlign={"center"}
+              justifyContent={"center"}
+              alignItems="center"
+            >
+              {/* <Image
+                src="/Login-amico.png"
+                width={300}
+                height={300}
+                alt="meeting"
+              /> */}
+            </Stack>
+          ) : (
+            paginatedData?.map((item: any, index: number) => (
+              <Grid key={index} item xs={4}>
+                {item?.faces && (
+                  <Image
+                    src={item?.faces[0]?.url}
+                    width={120}
+                    height={180}
+                    alt="image"
+                    style={{ marginBottom: "12px" }}
+                  />
+                )}
+              </Grid>
+            ))
+          )}
         </Grid>
       </Container>
     </>

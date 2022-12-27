@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -7,15 +7,18 @@ import {
   Typography,
   Grid,
   IconButton,
+  Pagination,
 } from "@mui/material";
 import Header from "../../components/header";
 import axios from "axios";
 import { NextPage } from "next";
 import ViewEventComponent from "../../components/page-ui-components/view-event/view-event";
-import Pagination from "../../components/common/pagination";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import styled from "styled-components";
+import { Context } from "../../context/contextProvider";
+import LoaderComponent from "../../components/common/loaders/backdrop-loader";
+import Image from "next/image";
 interface Props {
   query?: any;
 }
@@ -110,33 +113,40 @@ const GalleryStyles = styled.div`
 
 const ViewEvent: NextPage<Props> = ({ query }) => {
   const [data, setData] = useState<any | []>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const context = useContext<any>(Context);
+  const backDropContext = context?.BackdropLoader;
+  const { open } = backDropContext?.state;
   const [postsPerPage] = useState(9);
   const rowSkeletons = 1;
 
-  const getEventDetails = () => {
+  const getEventDetails = async () => {
+    let status: any = [];
     setLoading(true);
-    axios
-      .get(`https://portal.wisercount.com/api/event/${query.index}`)
-      .then((res:any) => {
-        setData(res.data.persons);
+    let params: any = {
+      status: status,
+      limit: 9,
+      page: currentPage,
+    };
+    if (!status?.length) {
+      delete params.status;
+    }
+    setLoading(true);
+    await axios
+      .get(`https://portal.wisercount.com/api/event/${query.index}`, { params })
+      .then((res: any) => {
+        setData(res.data);
         setLoading(false);
       })
-      .catch((err:any) => {});
+      .catch((err: any) => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
     getEventDetails();
-  }, [query]);
-
-  // Get current posts
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = data.slice(indexOfFirstPost, indexOfLastPost);
-
-  // Change page
-  const paginate = (pageNumber: any) => setCurrentPage(pageNumber);
+  }, [query, currentPage]);
 
   if (loading) {
     let rows = [];
@@ -148,7 +158,7 @@ const ViewEvent: NextPage<Props> = ({ query }) => {
               data={data}
               getEventDetails={getEventDetails}
               loading={loading}
-              paginatedData={currentPosts}
+              paginatedData={data?.persons}
             />
             <Stack sx={{ mx: 3 }} direction="row" spacing={1}>
               <Skeleton
@@ -175,13 +185,11 @@ const ViewEvent: NextPage<Props> = ({ query }) => {
       );
     }
 
-    return (
-      // <SkeletonTheme color="#F5F5F5" highlightColor="#ffffff">
-      <GalleryStyles className="gallery__grid">
-        <div className="gallery__grid">{rows}</div>
-      </GalleryStyles>
-      // </SkeletonTheme>
-    );
+    // return (
+    //   <GalleryStyles className="gallery__grid">
+    //     <div className="gallery__grid">{rows}</div>
+    //   </GalleryStyles>
+    // );
   }
 
   return (
@@ -189,24 +197,33 @@ const ViewEvent: NextPage<Props> = ({ query }) => {
       <Box mb={10}>
         <Header text="Event Name" backIcon editIcon />
       </Box>
-      <ViewEventComponent
-        paginatedData={currentPosts}
-        data={data}
-        getEventDetails={getEventDetails}
-        loading={loading}
-      />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          textAlign: "center",
-        }}
-      >
-        <Pagination
-          postsPerPage={postsPerPage}
-          totalPosts={data.length}
-          paginate={paginate}
+      <Box>
+        <ViewEventComponent
+          paginatedData={data?.persons}
+          data={data}
+          getEventDetails={getEventDetails}
+          loading={loading}
         />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            textAlign: "center",
+          }}
+        >
+          {data?.metadata?.pages > 1 ? (
+            <Box my={4}>
+              <Pagination
+                count={data?.metadata?.pages}
+                color="primary"
+                page={currentPage}
+                onChange={(event: any, value: any) => {
+                  setCurrentPage(value);
+                }}
+              />
+            </Box>
+          ) : null}
+        </Box>
       </Box>
     </>
   );
